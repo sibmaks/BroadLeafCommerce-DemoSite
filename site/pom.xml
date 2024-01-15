@@ -16,21 +16,7 @@
     <properties>
         <debug.port>8000</debug.port>
     </properties>
-    
-    <build>
-        <finalName>ROOT</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.mycompany-community</groupId>
@@ -68,5 +54,71 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>ROOT</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+              <groupId>com.google.cloud.tools</groupId>
+              <artifactId>jib-maven-plugin</artifactId>
+              <configuration>
+                <container>
+                  <mainClass>com.community.SiteApplication</mainClass>
+                  <jvmFlags>
+                    <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.lang=ALL-UNNAMED</jvmFlag>
+                    <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.util=ALL-UNNAMED</jvmFlag>
+                    <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/jdk.internal.ref=ALL-UNNAMED</jvmFlag>
+                    <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.naming/com.sun.jndi.ldap=ALL-UNNAMED</jvmFlag>
+                  </jvmFlags>
+                  <!-- <expandClasspathDependencies>true</expandClasspathDependencies> -->
+                </container>
+                <extraDirectories>
+                  <paths>
+                    <path>
+                      <from>../</from>
+                      <into>/</into>
+                      <includes>demo.properties</includes>
+                    </path>
+                  </paths>
+                </extraDirectories>
+                <from>
+                  <image>eclipse-temurin:17</image>
+                </from>
+             </configuration>
+           </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+      <profile>
+        <id>build_image</id>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>com.google.cloud.tools</groupId>
+              <artifactId>jib-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>build-tar</id>
+                  <phase>compile</phase>
+                  <goals>
+                    <goal>dockerBuild</goal>
+                  </goals>
+                </execution>
+              </executions>
+
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+    </profiles>
 
 </project>

@@ -52,6 +52,11 @@
                         <jvmArguments>${boot.jvm.args}</jvmArguments>
                     </configuration>
                 </plugin>
+                <plugin>
+                  <groupId>com.google.cloud.tools</groupId>
+                  <artifactId>jib-maven-plugin</artifactId>
+                  <version>3.4.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -85,7 +90,7 @@
                   </fileset>
                   <fileset>
                     <directory>${project.basedir}/pids</directory>
-                    <!-- <directory>${project.basedir}/var</directory> -->
+                    <directory>${project.basedir}/var</directory>
                   </fileset>
                 </filesets>
               </configuration>
