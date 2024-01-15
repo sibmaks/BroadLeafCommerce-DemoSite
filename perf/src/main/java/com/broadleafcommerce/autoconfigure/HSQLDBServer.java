@@ -73,6 +73,8 @@ public class HSQLDBServer implements SmartLifecycle {
         final String username = "SA";
         final String password = "";
 
+        LOG.info("Test JDBC URL: " + url);
+
         try (Connection ignored = DriverManager.getConnection(url, username, password)) {
             isRunning = true;
         } catch (SQLException e) {

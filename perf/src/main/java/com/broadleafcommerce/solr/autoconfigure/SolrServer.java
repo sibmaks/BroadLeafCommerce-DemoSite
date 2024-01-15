@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -68,6 +67,7 @@ public class SolrServer implements SmartLifecycle {
 
     @Override
     public boolean isRunning() {
+        LOG.info("Test socket connection: " + props.getHost() + ":" + props.getPort());
         try (Socket ignored = new Socket(props.getHost(), props.getPort())) {
             return true;
         } catch (IOException ignored) {
@@ -139,6 +139,7 @@ public class SolrServer implements SmartLifecycle {
 
     protected void startSolr() {
         if (!isRunning()) {
+            LOG.info("Solr is not running!");
             if (!downloadSolrIfApplicable()) {
                 throw new IllegalStateException("Could not download or expand Solr, see previous logs for more information");
             }
