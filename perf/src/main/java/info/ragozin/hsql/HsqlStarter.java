@@ -73,14 +73,8 @@ public class HsqlStarter {
     }
 
     private static void initJvmArgs(List<String> cmd) {
-        cmd.addAll(Arrays.asList("-server", "-Xss256k", "-Xms512m", "-Xmx512m", "-Duser.timezone=UTC", "-XX:NewRatio=3",
-                "-XX:SurvivorRatio=4", "-XX:TargetSurvivorRatio=90", "-XX:MaxTenuringThreshold=8",
-                "-XX:+UseConcMarkSweepGC", "-XX:+UseParNewGC", "-XX:ConcGCThreads=4", "-XX:ParallelGCThreads=4",
-                "-XX:+CMSScavengeBeforeRemark", "-XX:PretenureSizeThreshold=64m", "-XX:+UseCMSInitiatingOccupancyOnly",
-                "-XX:CMSInitiatingOccupancyFraction=50", "-XX:CMSMaxAbortablePrecleanTime=6000",
-                "-XX:+CMSParallelRemarkEnabled", "-XX:+ParallelRefProcEnabled", "-verbose:gc", "-XX:+PrintHeapAtGC",
-                "-XX:+PrintGCDetails", "-XX:+PrintGCDateStamps", "-XX:+PrintGCTimeStamps",
-                "-XX:+PrintTenuringDistribution", "-XX:+PrintGCApplicationStoppedTime"));
+        cmd.addAll(Arrays.asList("-server", "-Xss256k", "-Xms512m", "-Xmx512m", "-Duser.timezone=UTC",
+                "-verbose:gc"));
 
         cmd.add("-Xloggc:logs/hsql_gc.log");
     }
