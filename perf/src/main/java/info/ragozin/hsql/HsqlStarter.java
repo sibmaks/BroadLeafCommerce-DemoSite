@@ -73,8 +73,13 @@ public class HsqlStarter {
     }
 
     private static void initJvmArgs(List<String> cmd) {
-        cmd.addAll(Arrays.asList("-server", "-Xss256k", "-Xms512m", "-Xmx512m", "-Duser.timezone=UTC",
+        cmd.addAll(Arrays.asList("-server", "-Xss256k", "-Xms300m", "-Xmx300m", "-Duser.timezone=UTC",
                 "-verbose:gc"));
+
+        String commonArgs = System.getProperty("common.jvm.options");
+        if (commonArgs != null) {
+            cmd.addAll(Arrays.asList(commonArgs.split("\\s+")));
+        }
 
         cmd.add("-Xloggc:logs/hsql_gc.log");
     }

@@ -145,7 +145,7 @@ public class SolrServer implements SmartLifecycle {
             stopSolr();
             synchConfig();
             {
-            	SolrStarter.startSolr();
+                SolrStarter.startSolr();
             }
         }
     }
@@ -228,7 +228,7 @@ public class SolrServer implements SmartLifecycle {
 //    }
 
     protected void stopSolr() {
-    	SolrStarter.stopSolr();
+        SolrStarter.stopSolr();
     }
 
     protected boolean synchConfig() {
@@ -294,9 +294,10 @@ public class SolrServer implements SmartLifecycle {
         if (!workingDirectory.exists()) {
             workingDirectory.mkdirs();
         }
-        File destination = new File(workingDirectory, String.format(props.getName() + "." + getExtension(), props.getVersion()));
-        File command = new File(getSolrCommand());
-        if (!command.exists()) {
+        File destination = new File(workingDirectory, "../../dist/" + String.format(props.getName() + "." + getExtension(), props.getVersion()));
+        destination.getParentFile().mkdirs();
+
+        if (!destination.exists()) {
             OutputStream out = null;
             InputStream in = null;
             try {
@@ -339,12 +340,12 @@ public class SolrServer implements SmartLifecycle {
                 IOUtils.closeQuietly(out);
             }
         }
-        if (response) {
-            File expanded = new File(getSolrCommand());
-            if (!expanded.exists()) {
-                response = expandDownload(destination, workingDirectory);
-            }
+
+        File command = new File(getSolrCommand());
+        if (!command.exists() && destination.isFile()) {
+            response = expandDownload(destination, workingDirectory);
         }
+
         return response;
     }
 
@@ -362,6 +363,8 @@ public class SolrServer implements SmartLifecycle {
         }
         if (response) {
             LOG.info(String.format("Finished expanding %s", downloadFile.getAbsolutePath()));
+        } else {
+            downloadFile.delete();
         }
         return response;
     }

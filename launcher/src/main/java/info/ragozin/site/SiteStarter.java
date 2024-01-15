@@ -10,6 +10,7 @@ import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -95,6 +96,10 @@ public class SiteStarter {
             if (flag.trim().length() > 0) {
                 cmd.add(flag);
             }
+        }
+        String commonArgs = System.getProperty("common.jvm.options");
+        if (commonArgs != null) {
+            cmd.addAll(Arrays.asList(commonArgs.split("\\s+")));
         }
     }
 }

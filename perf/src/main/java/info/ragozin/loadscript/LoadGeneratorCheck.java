@@ -11,65 +11,69 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import info.ragozin.demostarter.DemoInitializer;
+
 public class LoadGeneratorCheck {
 
-	@Test
-	public void go() throws IOException, InterruptedException, SAXException {
+    @Test
+    public void go() throws IOException, InterruptedException, SAXException {
 
-		List<LoadScriptStep> steps = ScriptLoader.loadScript("load-scripts/check-script");
+        List<LoadScriptStep> steps = ScriptLoader.loadScript("load-scripts/check-script");
 
-		LoadScriptExecutor executor = new LoadScriptExecutor(steps);
+        LoadScriptExecutor executor = new LoadScriptExecutor(steps);
 
-		while(true) {
-			executor.perform();
+        while(true) {
+            executor.perform();
 //			break;
-		}
-	}
+        }
+    }
 
-	@Test
-	public void go_mt() throws IOException, InterruptedException {
+    @Test
+    public void go_mt() throws IOException, InterruptedException {
 
-		List<LoadScriptStep> steps = ScriptLoader.loadScript("load-scripts/check-script");
+        int sessions = DemoInitializer.propAsInt("loadgen.users", 40);
 
-		Executor service = createRandomDelayExecutor(15);
-		int sessions = 40;
+        List<LoadScriptStep> steps = ScriptLoader.loadScript("load-scripts/check-script");
 
-		Random rnd = new Random(1);
-		for(int i = 0; i != sessions; ++i) {
-			int delay = rnd.nextInt(5);
-			Thread.sleep(delay + 1000);
-			startSession(service, steps);
-		}
+        Executor service = createRandomDelayExecutor(15);
 
-		while(true) {
-			Thread.sleep(1000);
-		}
-	}
+        Random rnd = new Random(1);
+        for(int i = 0; i != sessions; ++i) {
+            int delay = rnd.nextInt(5);
+            Thread.sleep(delay + 1000);
+            startSession(service, steps);
+        }
 
-	private Executor createRandomDelayExecutor(int threads) {
-		final Random rnd = new Random();
-		final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(threads);
-		Executor exec = new Executor() {
+        while(true) {
+            Thread.sleep(1000);
+        }
+    }
 
-			@Override
-			public void execute(Runnable command) {
-				schedule.schedule(command, rnd.nextInt(1000), TimeUnit.MILLISECONDS);
+    private Executor createRandomDelayExecutor(int threads) {
+        final Random rnd = new Random();
+        final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(threads);
+        Executor exec = new Executor() {
 
-			}
-		};
-		return exec;
-	}
+            @Override
+            public void execute(Runnable command) {
+                schedule.schedule(command, rnd.nextInt(1000), TimeUnit.MILLISECONDS);
 
-	private void startSession(Executor service, List<LoadScriptStep> steps) {
+            }
+        };
+        return exec;
+    }
 
-		LoadScriptExecutor executor = new LoadScriptExecutor(steps);
+    private void startSession(Executor service, List<LoadScriptStep> steps) {
 
-		executor.perform(service, new Runnable() {
+        LoadScriptExecutor executor = new LoadScriptExecutor(steps);
 
-			@Override
-			public void run() {
-				startSession(service, steps);
-			}
-		});
-	}
+        executor.perform(service, new Runnable() {
+
+            @Override
+            public void run() {
+
+                startSession(service, steps);
+            }
+        });
+    }
 }
