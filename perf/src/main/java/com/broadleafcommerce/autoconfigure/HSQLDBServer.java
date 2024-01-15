@@ -10,7 +10,7 @@
  * the Broadleaf End User License Agreement (EULA), Version 1.1
  * (the "Commercial License" located at http://license.broadleafcommerce.org/commercial_license-1.1.txt)
  * shall apply.
- * 
+ *
  * Alternatively, the Commercial License may be replaced with a mutually agreed upon license (the "Custom License")
  * between you and Broadleaf Commerce. You may not use this file except in compliance with the applicable license.
  * #L%
@@ -54,10 +54,11 @@ public class HSQLDBServer implements SmartLifecycle {
         databaseConfig.setProperty("server.dbname.0", autoProps.getDbName());
         databaseConfig.setProperty("server.remote_open", "true");
         databaseConfig.setProperty("hsqldb.reconfig_logging", "false");
+        databaseConfig.setProperty("server.host", autoProps.getHost());
         databaseConfig.setProperty("server.port", Integer.toString(autoProps.getPort()));
-        
+
         this.props = new HsqlProperties(databaseConfig);
-        
+
         // start on construction since we need this to be active immediately
         start();
     }
@@ -65,12 +66,13 @@ public class HSQLDBServer implements SmartLifecycle {
     @Override
     public boolean isRunning() {
         boolean isRunning = false;
+        final String host = props.getProperty("server.host");
         final int port = props.getIntegerProperty("server.port", 0);
-        final String url = "jdbc:hsqldb:hsql://127.0.0.1:" + port + "/"
+        final String url = "jdbc:hsqldb:hsql://" + host + ":" + port + "/"
                            + props.getProperty("server.dbname.0", "");
         final String username = "SA";
         final String password = "";
-        
+
         try (Connection ignored = DriverManager.getConnection(url, username, password)) {
             isRunning = true;
         } catch (SQLException e) {
@@ -86,7 +88,7 @@ public class HSQLDBServer implements SmartLifecycle {
                 LOG.info("HSQL server is not running.");
             }
         }
-        
+
         return isRunning;
     }
 
@@ -94,7 +96,7 @@ public class HSQLDBServer implements SmartLifecycle {
     public void start() {
         // Extra isRunning() check since this is invoked on construction
         final boolean isRunning = props != null && isRunning();
-        
+
         if (!isRunning) {
             LOG.info("Starting HSQL server...");
             HsqlStarter.start();

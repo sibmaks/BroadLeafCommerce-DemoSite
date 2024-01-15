@@ -10,7 +10,7 @@
  * the Broadleaf End User License Agreement (EULA), Version 1.1
  * (the "Commercial License" located at http://license.broadleafcommerce.org/commercial_license-1.1.txt)
  * shall apply.
- * 
+ *
  * Alternatively, the Commercial License may be replaced with a mutually agreed upon license (the "Custom License")
  * between you and Broadleaf Commerce. You may not use this file except in compliance with the applicable license.
  * #L%
@@ -26,6 +26,7 @@ import java.io.File;
 @ConfigurationProperties("demo.database")
 public class HSQLDBProperties {
 
+    protected String host = "127.0.0.1";
     /**
      * Explicitly declare via property whether or not this HSQL database auto configuration should run
      */
@@ -60,6 +61,14 @@ public class HSQLDBProperties {
      */
     protected int port = 9001;
 
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
     public Boolean getAutoConfigEnabled() {
         return autoConfigEnabled;
     }
@@ -79,15 +88,15 @@ public class HSQLDBProperties {
     public String getWorkingDirectory() {
         return workingDirectory;
     }
-    
+
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
     }
-    
+
     public int getPort() {
         return port;
     }
-    
+
     public void setPort(int port) {
         this.port = port;
     }

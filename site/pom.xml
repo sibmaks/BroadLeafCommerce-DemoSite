@@ -87,6 +87,11 @@
                       <into>/</into>
                       <includes>demo.properties</includes>
                     </path>
+                    <path>
+                      <from>etc/</from>
+                      <into>/</into>
+                      <includes>*.properties</includes>
+                    </path>
                   </paths>
                 </extraDirectories>
                 <from>

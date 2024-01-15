@@ -98,7 +98,7 @@ public class HSQLDatabaseAutoConfiguration {
                 .create()
                 .username("SA")
                 .password("")
-                .url("jdbc:hsqldb:hsql://127.0.0.1:" + props.getPort() + "/" + props.getDbName())
+                .url("jdbc:hsqldb:hsql://" + props.getHost() + ":" + props.getPort() + "/" + props.getDbName())
                 .driverClassName("org.hsqldb.jdbcDriver")
                 .type(org.apache.tomcat.jdbc.pool.DataSource.class)
                 .build();

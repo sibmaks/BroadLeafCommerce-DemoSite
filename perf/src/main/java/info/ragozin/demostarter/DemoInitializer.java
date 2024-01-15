@@ -13,6 +13,10 @@ public class DemoInitializer {
         try {
             PROPS = new Properties();
             PROPS.load(new FileInputStream(file("demo.properties")));
+            if (file("demo-container.properties").isFile()) {
+                System.out.println("LOADING CONTAINER CONFIGURATION");
+                PROPS.load(new FileInputStream(file("ddemo-container.properties")));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

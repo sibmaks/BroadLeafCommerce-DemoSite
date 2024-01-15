@@ -68,7 +68,7 @@ public class SolrServer implements SmartLifecycle {
 
     @Override
     public boolean isRunning() {
-        try (Socket ignored = new Socket(InetAddress.getByName(null), props.getPort())) {
+        try (Socket ignored = new Socket(props.getHost(), props.getPort())) {
             return true;
         } catch (IOException ignored) {
             return false;
@@ -162,7 +162,7 @@ public class SolrServer implements SmartLifecycle {
             for (int j=0;j<20;j++) {
                 allCoresOnline = true;
                 try {
-                    URL testUrl = new URL("http://localhost:" + props.getPort() + "/solr/admin/cores?action=STATUS&indexInfo=false");
+                    URL testUrl = new URL("http://" + props.getHost() + ":" + props.getPort() + "/solr/admin/cores?action=STATUS&indexInfo=false");
                     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                     dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
                     DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -296,6 +296,11 @@ public class SolrServer implements SmartLifecycle {
         }
         File destination = new File(workingDirectory, "../../dist/" + String.format(props.getName() + "." + getExtension(), props.getVersion()));
         destination.getParentFile().mkdirs();
+        try {
+            destination = destination.getCanonicalFile();
+        } catch (IOException e) {
+            // ignore
+        }
 
         if (!destination.exists()) {
             OutputStream out = null;
@@ -318,6 +323,7 @@ public class SolrServer implements SmartLifecycle {
                     out = new BufferedOutputStream(new FileOutputStream(destination));
                     LOG.info(String.format("Downloading Solr from %s to %s", downloadUrl, destination.getAbsolutePath()));
                     copyLarge(in, out, contentLength);
+                    LOG.info(String.format("Download complete %s - %dMiB", destination.getAbsolutePath(), destination.length() >> 20));
                 } else {
                     // Unsuccessful download
                     LOG.error(String.format("Could not download Solr from %s, response code was %s", downloadUrl, statusCode));
@@ -413,8 +419,8 @@ public class SolrServer implements SmartLifecycle {
 
     protected boolean expandNix(File downloadFile, File workingDirectory, boolean response) {
         CommandLine cmdLine = new CommandLine("tar");
-        cmdLine.addArgument("-zxvf");
-        cmdLine.addArgument(downloadFile.getName());
+        cmdLine.addArgument("-zxf");
+        cmdLine.addArgument(downloadFile.getAbsolutePath());
         Executor executor = new DefaultExecutor();
         executor.setWorkingDirectory(workingDirectory);
         executor.setStreamHandler(new PumpStreamHandler(System.out));

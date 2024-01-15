@@ -10,7 +10,7 @@
  * the Broadleaf End User License Agreement (EULA), Version 1.1
  * (the "Commercial License" located at http://license.broadleafcommerce.org/commercial_license-1.1.txt)
  * shall apply.
- * 
+ *
  * Alternatively, the Commercial License may be replaced with a mutually agreed upon license (the "Custom License")
  * between you and Broadleaf Commerce. You may not use this file except in compliance with the applicable license.
  * #L%
@@ -56,6 +56,8 @@ public class SolrProperties {
      * Password to use to access a proxy for downloading solr
      */
     protected String downloadProxyPassword;
+
+    protected String host = "127.0.0.1";
     /**
      * Port on which solr will listen for requests
      */
@@ -131,6 +133,14 @@ public class SolrProperties {
 
     public void setDownloadProxyPassword(String downloadProxyPassword) {
         this.downloadProxyPassword = downloadProxyPassword;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public int getPort() {
