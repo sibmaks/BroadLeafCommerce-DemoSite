@@ -1884,7 +1884,7 @@ public class SystemUtils {
      * @return true if matches, or false if not or can't determine
      */
     static boolean isOSVersionMatch(final String osVersion, final String osVersionPrefix) {
-        if (StringUtils.isEmpty(osVersion)) {
+        if (osVersion == null || osVersion.trim().length() == 0) {
             return false;
         }
         // Compare parts of the version string instead of using String.startsWith(String) because otherwise
