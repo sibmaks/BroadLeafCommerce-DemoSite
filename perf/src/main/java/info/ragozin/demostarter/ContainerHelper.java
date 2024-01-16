@@ -54,7 +54,7 @@ public class ContainerHelper {
             return false;
         }
         try {
-            ProcessBuilder pb = new ProcessBuilder(dockerCmd, "stop", containerName);
+            ProcessBuilder pb = new ProcessBuilder(dockerCmd, "ps");
             pb.directory(new File(DemoInitializer.getDemoHome()));
             Process p = pb.start();
             if (!p.waitFor(10, TimeUnit.SECONDS) || p.exitValue() != 0) {
@@ -67,11 +67,13 @@ public class ContainerHelper {
             }
             ;
             String output = IOUtils.toString(p.getInputStream());
+            System.out.println("ps output:\n" + output);
             String[] lines = output.split("[\\n]");
             for (String line: lines) {
                 String[] parts = line.split("\\s+");
+                System.out.println("Check line: " + Arrays.toString(parts));
                 String last = parts.length == 0 ? "" : parts[parts.length - 1];
-                if (last == containerName) {
+                if (containerName.equals(last)) {
                     return true;
                 }
             }

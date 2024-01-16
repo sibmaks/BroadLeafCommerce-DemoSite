@@ -139,6 +139,7 @@ public class ProcessWatchDog extends Thread {
                 socket = new ServerSocket(lgport, 10, LOCALHOST);
                 token = vmname + "\n" + socket.getLocalPort() + " " + magic;
             } else {
+                System.out.println("Using explict life grant, port: " + lgport);
                 // bind to all addresses
                 socket = new ServerSocket(lgport, 10);
                 token = vmname + "\n" + "127.0.0.1:" + socket.getLocalPort() + " " + magic;

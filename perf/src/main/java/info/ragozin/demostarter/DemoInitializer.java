@@ -15,7 +15,7 @@ public class DemoInitializer {
             PROPS.load(new FileInputStream(file("demo.properties")));
             if (file("demo-container.properties").isFile()) {
                 System.out.println("LOADING CONTAINER CONFIGURATION");
-                PROPS.load(new FileInputStream(file("ddemo-container.properties")));
+                PROPS.load(new FileInputStream(file("demo-container.properties")));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

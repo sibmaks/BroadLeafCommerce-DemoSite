@@ -45,6 +45,7 @@ public class DockerDemoStarter {
 
         if (!ContainerHelper.checkRunning("storefront")) {
             System.out.println("Starting Spring Boot app in container ...");
+            ContainerHelper.removeContainer("storefront");
             ContainerHelper.builder("storefront", "boot-community-demo-site:1.0.0-SNAPSHOT")
                 .mount("pid", "/pid")
                 .mount("var", "/var")
