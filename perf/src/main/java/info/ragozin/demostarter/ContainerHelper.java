@@ -137,12 +137,13 @@ public class ContainerHelper {
         String image;
 
         public Builder mount(String src, String dst) {
-            if (!new File(src).isDirectory()) {
-                if (!new File(src).mkdirs()) {
-                    throw new RuntimeException("[" + src + "] is not a directory");
+            File srcPath = DemoInitializer.file(src);
+            if (!srcPath.isDirectory()) {
+                if (!srcPath.mkdirs()) {
+                    throw new RuntimeException("[" + srcPath.getAbsolutePath() + "] is not a directory");
                 }
             }
-            cmd.addAll(Arrays.asList("--mount", "type=bind,source=\"" + src + "\",target=\"" + dst + "\""));
+            cmd.addAll(Arrays.asList("--mount", "type=bind,source=" + srcPath.getAbsolutePath() + ",target=" + dst + ""));
             return this;
         }
 
@@ -151,7 +152,7 @@ public class ContainerHelper {
             return this;
         }
 
-        public void run() {
+        public boolean run() {
             try {
                 List<String> cmd = new ArrayList<>(this.cmd);
                 cmd.add(image);
@@ -159,7 +160,13 @@ public class ContainerHelper {
                 pb.directory(new File(DemoInitializer.getDemoHome()));
                 pb.inheritIO();
                 System.out.println("Container command: " + showCommand(pb));
-                pb.start().waitFor(30, TimeUnit.SECONDS);
+                Process proc = pb.start();
+                if (!proc.waitFor(30, TimeUnit.SECONDS)) {
+                    proc.destroy();
+                    System.out.println("Command timeout");
+                    return false;
+                }
+                return proc.exitValue() == 0;
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
             }

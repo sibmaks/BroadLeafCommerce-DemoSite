@@ -46,13 +46,17 @@ public class DockerDemoStarter {
         if (!ContainerHelper.checkRunning("storefront")) {
             System.out.println("Starting Spring Boot app in container ...");
             ContainerHelper.removeContainer("storefront");
+            if (
             ContainerHelper.builder("storefront", "boot-community-demo-site:1.0.0-SNAPSHOT")
                 .mount("pids", "/app/pids")
                 .mount("var", "/app/var")
                 .port(8080, 8080)
                 .port(11222, 11222) // spare port for JMX
                 .port(23045, 23045) // static port for live grant
-                .run();
+                .run()) {
+                Thread.sleep(10); // give some time to lifegrant to appear
+            };
+
         }
 
         System.out.println("Waiting for 127.0.0.1:8080");
