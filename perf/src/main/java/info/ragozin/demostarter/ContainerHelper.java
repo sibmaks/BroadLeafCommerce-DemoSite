@@ -67,11 +67,9 @@ public class ContainerHelper {
             }
             ;
             String output = IOUtils.toString(p.getInputStream());
-            System.out.println("ps output:\n" + output);
             String[] lines = output.split("[\\n]");
             for (String line: lines) {
                 String[] parts = line.split("\\s+");
-                System.out.println("Check line: " + Arrays.toString(parts));
                 String last = parts.length == 0 ? "" : parts[parts.length - 1];
                 if (containerName.equals(last)) {
                     return true;
@@ -139,7 +137,12 @@ public class ContainerHelper {
         String image;
 
         public Builder mount(String src, String dst) {
-            cmd.addAll(Arrays.asList("-v", src + ":" + dst));
+            if (!new File(src).isDirectory()) {
+                if (!new File(src).mkdirs()) {
+                    throw new RuntimeException("[" + src + "] is not a directory");
+                }
+            }
+            cmd.addAll(Arrays.asList("--mount", "type=bind,source=\"" + src + "\",target=\"" + dst + "\""));
             return this;
         }
 

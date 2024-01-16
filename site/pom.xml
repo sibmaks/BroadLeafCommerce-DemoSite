@@ -80,7 +80,7 @@
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.naming/com.sun.jndi.ldap=ALL-UNNAMED</jvmFlag>
                   </jvmFlags>
                   <!-- <expandClasspathDependencies>true</expandClasspathDependencies> -->
-                  <workingDirectory>app</workingDirectory>
+                  <workingDirectory>/app/</workingDirectory>
                 </container>
                 <extraDirectories>
                   <paths>
