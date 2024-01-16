@@ -116,7 +116,7 @@ public class ContainerHelper {
     public static void removeContainer(String containerName) {
 
         try {
-            ProcessBuilder pb = new ProcessBuilder(dockerCmd, "rm", containerName);
+            ProcessBuilder pb = new ProcessBuilder(dockerCmd, "rm", "-f", containerName);
             pb.directory(new File(DemoInitializer.getDemoHome()));
             pb.inheritIO();
             System.out.println("Container command: " + showCommand(pb));

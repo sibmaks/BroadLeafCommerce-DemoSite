@@ -47,8 +47,8 @@ public class DockerDemoStarter {
             System.out.println("Starting Spring Boot app in container ...");
             ContainerHelper.removeContainer("storefront");
             ContainerHelper.builder("storefront", "boot-community-demo-site:1.0.0-SNAPSHOT")
-                .mount("pid", "/pid")
-                .mount("var", "/var")
+                .mount("pids", "/app/pids")
+                .mount("var", "/app/var")
                 .port(8080, 8080)
                 .port(11222, 11222) // spare port for JMX
                 .port(23045, 23045) // static port for live grant
