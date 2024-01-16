@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import info.ragozin.loadgen.LoadGenStarter;
 
-public class DcokerDemoStartAndLoad {
+public class DockerDemoStartAndLoad {
 
     @Test
     public void startDemoAndLoad() throws InterruptedException {

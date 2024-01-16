@@ -48,6 +48,7 @@ public class DockerDemoStarter {
             ContainerHelper.removeContainer("storefront");
             if (
             ContainerHelper.builder("storefront", "boot-community-demo-site:1.0.0-SNAPSHOT")
+                .memory(600)
                 .mount("pids", "/app/pids")
                 .mount("var", "/app/var")
                 .port(8080, 8080)

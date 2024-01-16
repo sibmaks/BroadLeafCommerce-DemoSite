@@ -152,6 +152,11 @@ public class ContainerHelper {
             return this;
         }
 
+        public Builder memory(int limitMiB) {
+            cmd.addAll(Arrays.asList("-m", String.valueOf(((long)limitMiB) << 20)));
+            return this;
+        }
+
         public boolean run() {
             try {
                 List<String> cmd = new ArrayList<>(this.cmd);
