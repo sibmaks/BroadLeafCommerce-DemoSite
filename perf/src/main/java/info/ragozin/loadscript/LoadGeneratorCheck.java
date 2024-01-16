@@ -35,6 +35,7 @@ public class LoadGeneratorCheck {
 
         List<LoadScriptStep> steps = ScriptLoader.loadScript("load-scripts/check-script");
 
+        System.out.println("Staring " + sessions + " users, with " + steps.size() + " steps long script");
         Executor service = createRandomDelayExecutor(15);
 
         Random rnd = new Random(1);

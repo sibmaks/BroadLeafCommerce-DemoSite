@@ -84,7 +84,7 @@
                   <exclude>**Test.java</exclude>
                 </excludes>
                 <includes>
-                  <include>**/DockerDemoStarAndLoad.java</include>
+                  <include>**/DockerDemoStartAndLoad.java</include>
                 </includes>
               </configuration>
             </plugin>

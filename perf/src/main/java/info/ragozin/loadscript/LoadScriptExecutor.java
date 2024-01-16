@@ -23,6 +23,9 @@ public class LoadScriptExecutor {
     private Iterator<LoadScriptStep> next;
 
     public LoadScriptExecutor(List<LoadScriptStep> script) {
+        if (script.isEmpty()) {
+            throw new RuntimeException("Empty script");
+        }
         this.script.addAll(script);
     }
 
@@ -36,6 +39,9 @@ public class LoadScriptExecutor {
 
     public void perform(Executor exec, Runnable completeTask) {
         next = script.iterator();
+        if (!next.hasNext()) {
+            throw new RuntimeException("Empty script");
+        }
         WebClient client = new WebClient();
         connection = new HttpWebConnection(client);
         connection = new LoggingWebConnection(connection);
