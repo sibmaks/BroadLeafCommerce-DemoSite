@@ -2,6 +2,7 @@ package info.ragozin.demo;
 
 import org.junit.Test;
 
+import info.ragozin.demostarter.ContainerHelper;
 import info.ragozin.demostarter.DemoInitializer;
 
 public class DemoStopper {
@@ -12,10 +13,14 @@ public class DemoStopper {
         DemoInitializer.kill("hsqldb");
         System.out.println("Stopping Solr ...");
         DemoInitializer.kill("solr");
-        System.out.println("Stopping Storefront ...");
-        DemoInitializer.kill("storefront");
         System.out.println("Stopping LoadGen ...");
         DemoInitializer.kill("loadgen");
+        System.out.println("Stopping Storefront ...");
+        DemoInitializer.kill("storefront");
         System.out.println("Demo stopped");
+        if (ContainerHelper.isDockerAvailable()) {
+            System.out.println("Stopping container ...");
+            ContainerHelper.stopContainer("storefront");
+        }
     }
 }

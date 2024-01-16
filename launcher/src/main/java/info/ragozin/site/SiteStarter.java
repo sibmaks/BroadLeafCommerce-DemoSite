@@ -29,6 +29,10 @@ public class SiteStarter {
         return DemoInitializer.check("storefront");
     }
 
+    public static boolean checkPort() {
+        return checkPort(8080);
+    }
+
     public static void start() {
         try {
             kill("storefront");
@@ -63,7 +67,7 @@ public class SiteStarter {
     }
 
     @SuppressWarnings("resource")
-    private static void waitForPort(int port) {
+    public static void waitForPort(int port) {
         while(true) {
             if (!check()) {
                 System.err.println("Startup failed, see logs in var/storefront/logs");
@@ -82,6 +86,25 @@ public class SiteStarter {
                 // ignore;
             }
         }
+    }
+
+    @SuppressWarnings("resource")
+    private static boolean checkPort(int port) {
+        for (int i = 0; i != 2; ++i) {
+            try {
+                Socket sock = new Socket();
+                sock.setSoTimeout(3);
+                sock.connect(new InetSocketAddress("127.0.0.1", port));
+                if (sock.isConnected()) {
+                    sock.close();
+                    return true;
+                }
+            }
+            catch(IOException e) {
+                // ignore;
+            }
+        }
+        return false;
     }
 
     public static void stop() {

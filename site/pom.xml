@@ -5,14 +5,14 @@
         <artifactId>boot-community-demo</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>boot-community-demo-site</artifactId>
     <packaging>jar</packaging>
-    
+
     <name>Community Demo Site</name>
     <description>Web Module For Customized Broadleaf Commerce Site</description>
-    
+
     <properties>
         <debug.port>8000</debug.port>
     </properties>
@@ -30,7 +30,7 @@
             <groupId>org.broadleafcommerce</groupId>
             <artifactId>broadleaf-framework-web</artifactId>
         </dependency>
-        <!-- Provided by perf 
+        <!-- Provided by perf
         <dependency>
             <groupId>com.broadleafcommerce</groupId>
             <artifactId>broadleaf-boot-starter-solr</artifactId>
@@ -73,6 +73,7 @@
                 <container>
                   <mainClass>com.community.SiteApplication</mainClass>
                   <jvmFlags>
+                    <jvmFlag>-DlifeGrant.port=23045</jvmFlag> <!-- port should be exposed from container for lifeGrant to work -->
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.lang=ALL-UNNAMED</jvmFlag>
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.util=ALL-UNNAMED</jvmFlag>
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/jdk.internal.ref=ALL-UNNAMED</jvmFlag>
