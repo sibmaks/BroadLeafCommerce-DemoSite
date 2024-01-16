@@ -15,47 +15,55 @@ import com.gargoylesoftware.htmlunit.WebConnection;
 
 public class LoadScriptExecutor {
 
-	private final List<LoadScriptStep> script = new ArrayList<>();
-	private final Map<String, String> variables = new HashMap<>();
+    private final List<LoadScriptStep> script = new ArrayList<>();
+    private final Map<String, String> variables = new HashMap<>();
 
-	private WebConnection connection;
-	private Iterator<LoadScriptStep> next;
+    private String connectionOverride = null;
+    private WebConnection connection;
+    private Iterator<LoadScriptStep> next;
 
-	public LoadScriptExecutor(List<LoadScriptStep> script) {
-		this.script.addAll(script);
-	}
+    public LoadScriptExecutor(List<LoadScriptStep> script) {
+        this.script.addAll(script);
+    }
 
-	public void perform() {
-		perform(cmd -> cmd.run(), () -> {});
-	}
+    public void setTargetURL(String targetURL) {
+        connectionOverride = targetURL;
+    }
 
-	public void perform(Executor exec, Runnable completeTask) {
-		next = script.iterator();
-		WebClient client = new WebClient();
-		connection = new HttpWebConnection(client);
-		connection = new LoggingWebConnection(connection);
-		connection = new TrivialCachingWebConnection(connection);
-		Runnable step = new Runnable() {
+    public void perform() {
+        perform(cmd -> cmd.run(), () -> {});
+    }
 
-			@Override
-			public void run() {
-				try {
-					next.next().perform(connection, variables);
-				} catch (SAXException e) {
-					e.printStackTrace();
-				}
-				if (variables.containsKey("RESTART")) {
-				    variables.remove("RESTART");
-				    next = script.iterator();
-				}
-				if (next.hasNext()) {
-					exec.execute(this);
-				}
-				else {
-					completeTask.run();
-				}
-			}
-		};
-		exec.execute(step);
-	}
+    public void perform(Executor exec, Runnable completeTask) {
+        next = script.iterator();
+        WebClient client = new WebClient();
+        connection = new HttpWebConnection(client);
+        connection = new LoggingWebConnection(connection);
+        connection = new TrivialCachingWebConnection(connection);
+        if (connectionOverride != null) {
+            connection = new HostOverridingConnection(connectionOverride, connection);
+        }
+        Runnable step = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    next.next().perform(connection, variables);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (variables.containsKey("RESTART")) {
+                    variables.remove("RESTART");
+                    next = script.iterator();
+                }
+                if (next.hasNext()) {
+                    exec.execute(this);
+                }
+                else {
+                    completeTask.run();
+                }
+            }
+        };
+        exec.execute(step);
+    }
 }

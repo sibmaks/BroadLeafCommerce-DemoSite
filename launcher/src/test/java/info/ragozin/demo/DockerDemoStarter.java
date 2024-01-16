@@ -54,13 +54,15 @@ public class DockerDemoStarter {
                 .port(11222, 11222) // spare port for JMX
                 .port(23045, 23045) // static port for live grant
                 .run()) {
-                Thread.sleep(10); // give some time to lifegrant to appear
+
+        System.out.println("Waiting for container");
+                Thread.sleep(5000); // give some time to lifegrant to appear
             };
 
         }
 
-        System.out.println("Waiting for 127.0.0.1:8080");
-        SiteStarter.waitForPort(8080);
+        System.out.println("Waiting for http://127.0.0.1:8080/");
+        SiteStarter.waitForHttp(8080);
 
         System.out.println("");
         System.out.println("Now you can start application dokcer image");

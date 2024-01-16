@@ -71,6 +71,26 @@
           </plugins>
         </build>
       </profile>
+      <profile>
+        <id>run_n_load_docker</id>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.19.1</version>
+              <configuration>
+                <excludes>
+                  <exclude>**Test.java</exclude>
+                </excludes>
+                <includes>
+                  <include>**/DockerDemoStarAndLoad.java</include>
+                </includes>
+              </configuration>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
     </profiles>
 
     <dependencies>

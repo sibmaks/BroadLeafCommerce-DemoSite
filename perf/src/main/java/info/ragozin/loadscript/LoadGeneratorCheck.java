@@ -66,7 +66,9 @@ public class LoadGeneratorCheck {
     private void startSession(Executor service, List<LoadScriptStep> steps) {
 
         LoadScriptExecutor executor = new LoadScriptExecutor(steps);
+        //executor.setTargetURL("http://192.168.1.103:8080");
 
+        System.out.println("Starting bot ...");
         executor.perform(service, new Runnable() {
 
             @Override

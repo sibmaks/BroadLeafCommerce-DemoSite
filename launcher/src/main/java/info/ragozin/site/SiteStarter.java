@@ -9,11 +9,13 @@ import java.lang.ProcessBuilder.Redirect;
 import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.hsqldb.Server;
 import org.hsqldb.persist.HsqlProperties;
 
@@ -58,7 +60,7 @@ public class SiteStarter {
                 throw new RuntimeException("Failed to start");
             }
 
-            waitForPort(8080);
+            waitForHttp(8080);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -67,18 +69,16 @@ public class SiteStarter {
     }
 
     @SuppressWarnings("resource")
-    public static void waitForPort(int port) {
+    public static void waitForHttp(int port) {
         while(true) {
             if (!check()) {
                 System.err.println("Startup failed, see logs in var/storefront/logs");
                 throw new RuntimeException();
             }
             try {
-                Socket sock = new Socket();
-                sock.setSoTimeout(10);
-                sock.connect(new InetSocketAddress("127.0.0.1", port));
-                if (sock.isConnected()) {
-                    sock.close();
+                URL url = new URL("http://127.0.0.1:" + port + "/");
+                String text = IOUtils.toString(url.openStream());
+                if (text != null && text.length() > 0) {
                     return;
                 }
             }
