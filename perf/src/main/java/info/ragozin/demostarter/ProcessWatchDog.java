@@ -21,9 +21,9 @@ public class ProcessWatchDog extends Thread {
     private static InetAddress LOCALHOST;
     static {
         try {
-            System.out.println("MacOS is detected use 127.0.0.1 for life grant");
             if (SystemUtils.IS_OS_MAC) {
                 // MacOS has limited loopback addresses
+                System.out.println("MacOS is detected use 127.0.0.1 for life grant");
                 LOCALHOST = InetAddress.getByAddress(new byte[] {127, 0, 0, 1});
             } else {
                 LOCALHOST = InetAddress.getByAddress(new byte[] {127, 0, 0, 42});

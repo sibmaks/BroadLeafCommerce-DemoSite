@@ -52,7 +52,7 @@ public class DockerDemoStarter {
                 .mount("pids", "/app/pids")
                 .mount("var", "/app/var")
                 .port(8080, 8080)
-                .port(11222, 11222) // spare port for JMX
+                .port(11222, 11122) // spare port for JMX, use different port number inside container to complicate JMX connection
                 .port(23045, 23045) // static port for live grant
                 .run()) {
 
