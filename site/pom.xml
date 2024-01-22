@@ -74,6 +74,7 @@
                   <mainClass>com.community.SiteApplication</mainClass>
                   <jvmFlags>
                     <jvmFlag>-DlifeGrant.port=23045</jvmFlag> <!-- port should be exposed from container for lifeGrant to work -->
+                    <jvmFlag>-Djava.rmi.server.hostname=127.2.2.2</jvmFlag> <!-- Mess with RMI IP -->
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.lang=ALL-UNNAMED</jvmFlag>
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/java.util=ALL-UNNAMED</jvmFlag>
                     <jvmFlag>--add-opens</jvmFlag><jvmFlag>java.base/jdk.internal.ref=ALL-UNNAMED</jvmFlag>
