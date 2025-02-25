@@ -174,5 +174,9 @@
             <artifactId>nanocloud</artifactId>
             <version>0.8.15</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.sibmaks.spring-jfr</groupId>
+            <artifactId>agent</artifactId>
+        </dependency>
     </dependencies>
 </project>
