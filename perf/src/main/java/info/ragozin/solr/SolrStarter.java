@@ -80,7 +80,7 @@ public class SolrStarter {
             cmd.addAll(Arrays.asList(commonArgs.split("\\s+")));
         }
 
-        cmd.add("-Xloggc:../../logs/solr_gc.log");
+        cmd.add("-Xlog:gc:../../logs/solr_gc.log");
     }
 
     private static File getSolrHome() {

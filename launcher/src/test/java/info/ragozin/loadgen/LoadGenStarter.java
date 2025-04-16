@@ -66,7 +66,7 @@ public class LoadGenStarter {
     }
 
     private static void initJvmArgs(List<String> cmd) {
-        cmd.add("-Xloggc:../var/loadgen/logs/gc.log");
+        cmd.add("-Xlog:gc:../var/loadgen/logs/gc.log");
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

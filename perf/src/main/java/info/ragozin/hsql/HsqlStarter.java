@@ -82,7 +82,7 @@ public class HsqlStarter {
             cmd.addAll(Arrays.asList(commonArgs.split("\\s+")));
         }
 
-        cmd.add("-Xloggc:logs/hsql_gc.log");
+        cmd.add("-Xlog:gc:logs/hsql_gc.log");
     }
 
     public static void main(String[] args) {

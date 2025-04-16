@@ -39,7 +39,7 @@ public class SolrStartCheck {
 				"-XX:+CMSParallelRemarkEnabled", "-XX:+ParallelRefProcEnabled",
 				"-verbose:gc", "-XX:+PrintHeapAtGC", "-XX:+PrintGCDetails", "-XX:+PrintGCDateStamps",
 				"-XX:+PrintGCTimeStamps", "-XX:+PrintTenuringDistribution", "-XX:+PrintGCApplicationStoppedTime");
-		solr.x(VX.JVM).addJvmArg("-Xloggc:logs/solr_gc.log");
+		solr.x(VX.JVM).addJvmArg("-Xlog:gc:logs/solr_gc.log");
 		
 		solr.exec(new Runnable() {
 			@Override
