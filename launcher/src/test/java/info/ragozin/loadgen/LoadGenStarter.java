@@ -54,7 +54,8 @@ public class LoadGenStarter {
             pb.directory(file("perf"));
             pb.redirectOutput(Redirect.to(file("var/loadgen/logs/console.out")));
             pb.redirectError(Redirect.to(file("var/loadgen/logs/console.err")));
-            if (pb.start().waitFor(10, TimeUnit.SECONDS)) {
+            int timeout = Integer.parseInt(DemoInitializer.prop("startup.timeout", "10"));
+            if (pb.start().waitFor(timeout, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Failed to start");
             }
         } catch (InterruptedException e) {

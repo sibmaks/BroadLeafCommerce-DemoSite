@@ -1,12 +1,11 @@
 package com.community;
 
+import info.ragozin.demostarter.DemoInitializer;
 import org.broadleafcommerce.common.config.EnableBroadleafSiteAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
-
-import info.ragozin.demostarter.DemoInitializer;
 
 @SpringBootApplication
 @EnableAutoConfiguration

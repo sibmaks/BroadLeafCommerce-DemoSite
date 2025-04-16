@@ -1,7 +1,9 @@
 package info.ragozin.site;
 
-import static info.ragozin.demostarter.DemoInitializer.file;
-import static info.ragozin.demostarter.DemoInitializer.kill;
+import info.ragozin.demostarter.DemoInitializer;
+import org.apache.commons.io.IOUtils;
+import org.hsqldb.Server;
+import org.hsqldb.persist.HsqlProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.IOUtils;
-import org.hsqldb.Server;
-import org.hsqldb.persist.HsqlProperties;
-
-import info.ragozin.demostarter.DemoInitializer;
+import static info.ragozin.demostarter.DemoInitializer.file;
+import static info.ragozin.demostarter.DemoInitializer.kill;
 
 public class SiteStarter {
 
@@ -56,7 +55,8 @@ public class SiteStarter {
             pb.directory(file("var/storefront"));
             pb.redirectOutput(Redirect.to(file("var/storefront/logs/console.out")));
             pb.redirectError(Redirect.to(file("var/storefront/logs/console.err")));
-            if (pb.start().waitFor(10, TimeUnit.SECONDS)) {
+            int timeout = Integer.parseInt(DemoInitializer.prop("startup.timeout", "10"));
+            if (pb.start().waitFor(timeout, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Failed to start");
             }
 
@@ -70,7 +70,7 @@ public class SiteStarter {
 
     @SuppressWarnings("resource")
     public static void waitForHttp(int port) {
-        while(true) {
+        while (true) {
             if (!check()) {
                 System.err.println("Startup failed, see logs in var/storefront/logs");
                 throw new RuntimeException();
@@ -78,11 +78,10 @@ public class SiteStarter {
             try {
                 URL url = new URL("http://127.0.0.1:" + port + "/");
                 String text = IOUtils.toString(url.openStream());
-                if (text != null && text.length() > 0) {
+                if (text != null && !text.isEmpty()) {
                     return;
                 }
-            }
-            catch(IOException e) {
+            } catch (IOException e) {
                 // ignore;
             }
         }
@@ -99,8 +98,7 @@ public class SiteStarter {
                     sock.close();
                     return true;
                 }
-            }
-            catch(IOException e) {
+            } catch (IOException e) {
                 // ignore;
             }
         }
@@ -115,8 +113,8 @@ public class SiteStarter {
         cmd.add("-Xmx512m");
         cmd.add("-Xloggc:logs/gc.log");
         String[] extraFlags = DemoInitializer.prop("storefront.jvm.options", "").split("\\s+");
-        for(String flag: extraFlags) {
-            if (flag.trim().length() > 0) {
+        for (String flag : extraFlags) {
+            if (!flag.trim().isEmpty()) {
                 cmd.add(flag);
             }
         }

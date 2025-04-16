@@ -57,7 +57,8 @@ public class SolrStarter {
             pb.directory(new File(solrHome, "server"));
             pb.redirectOutput(Redirect.to(new File(logDir, "console.out")));
             pb.redirectError(Redirect.to(new File(logDir, "console.err")));
-            if (pb.start().waitFor(10, TimeUnit.SECONDS)) {
+            int timeout = Integer.parseInt(DemoInitializer.prop("startup.timeout", "10"));
+            if (pb.start().waitFor(timeout, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Failed to start");
             }
         } catch (InterruptedException e) {
