@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="2.0"
+               label="SpringJFR"
+               description="Profile for collecting data for Spring Boot Analyzer"
+               provider="sibmaks">
+
+    <!-- Beans events -->
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.BeanDefinitionRegisteredEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.MergedBeanDefinitionRegisteredEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.PostProcessAfterInitializationEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.PostProcessBeforeInitializationEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.PostProcessBeforeDestructionEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.bean.ResolveBeanDependencyEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <!-- Tracing Controller events -->
+    <event name="io.github.sibmaks.spring.jfr.event.recording.controller.ControllerMethodCalledEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.controller.ControllerMethodExecutedEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.controller.ControllerMethodFailedEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <!-- Tracing Service events -->
+    <event name="io.github.sibmaks.spring.jfr.event.recording.service.ServiceMethodCalledEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.service.ServiceMethodExecutedEvent">
+        <enabled>true</enabled>
+    </event>
+
+    <event name="io.github.sibmaks.spring.jfr.event.recording.service.ServiceMethodFailedEvent">
+        <enabled>true</enabled>
+    </event>
+
+</configuration>
