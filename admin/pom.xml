@@ -65,10 +65,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.github.sibmaks.spring-jfr</groupId>
-            <artifactId>agent</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
