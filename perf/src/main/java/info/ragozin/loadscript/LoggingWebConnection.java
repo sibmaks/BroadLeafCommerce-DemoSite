@@ -9,6 +9,7 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.util.WebConnectionWrapper;
 
 public class LoggingWebConnection extends WebConnectionWrapper {
+	private static final double NANOS = TimeUnit.MILLISECONDS.toNanos(1);
 
 	public LoggingWebConnection(WebConnection webConnection) throws IllegalArgumentException {
 		super(webConnection);
@@ -19,6 +20,7 @@ public class LoggingWebConnection extends WebConnectionWrapper {
 		String method = request.getHttpMethod().toString();
 		String url = request.getUrl().toString();
 		long time = System.nanoTime();
+		long beginAt = System.currentTimeMillis();
 		String code = "fail";
 		try {
 			WebResponse response = super.getResponse(request);
@@ -27,7 +29,7 @@ public class LoggingWebConnection extends WebConnectionWrapper {
 		}
 		finally {
 			long dur = System.nanoTime() - time;
-			System.out.println(String.format("[%s] at %3.1fms - (%s) %s", method, 1d * dur / TimeUnit.MILLISECONDS.toNanos(1), code, url));
+			System.out.printf("[%d][%s] at %3.1fms - (%s) %s%n", beginAt, method, dur / NANOS, code, url);
 		}
 	}
 }
