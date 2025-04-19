@@ -1,5 +1,9 @@
 package info.ragozin.loadscript;
 
+import info.ragozin.demostarter.DemoInitializer;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -7,11 +11,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
-import info.ragozin.demostarter.DemoInitializer;
 
 public class LoadGeneratorCheck {
 
@@ -22,7 +21,8 @@ public class LoadGeneratorCheck {
 
         LoadScriptExecutor executor = new LoadScriptExecutor(steps);
 
-        while(true) {
+        Thread currentThread = Thread.currentThread();
+        while (!currentThread.isInterrupted()) {
             executor.perform();
 //			break;
         }
@@ -39,29 +39,22 @@ public class LoadGeneratorCheck {
         Executor service = createRandomDelayExecutor(15);
 
         Random rnd = new Random(1);
-        for(int i = 0; i != sessions; ++i) {
+        for (int i = 0; i != sessions; ++i) {
             int delay = rnd.nextInt(5);
             Thread.sleep(delay + 1000);
             startSession(service, steps);
         }
 
-        while(true) {
-            Thread.sleep(1000);
+        Thread currentThread = Thread.currentThread();
+        while (!currentThread.isInterrupted()) {
+            TimeUnit.SECONDS.sleep(1);
         }
     }
 
     private Executor createRandomDelayExecutor(int threads) {
         final Random rnd = new Random();
         final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(threads);
-        Executor exec = new Executor() {
-
-            @Override
-            public void execute(Runnable command) {
-                schedule.schedule(command, rnd.nextInt(1000), TimeUnit.MILLISECONDS);
-
-            }
-        };
-        return exec;
+        return command -> schedule.schedule(command, rnd.nextInt(1000), TimeUnit.MILLISECONDS);
     }
 
     private void startSession(Executor service, List<LoadScriptStep> steps) {
