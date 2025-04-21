@@ -170,14 +170,28 @@ public class LatencyProxy {
             } catch (IOException e) {
                 LOG.error("Forwarding exception", e);
             } finally {
-                silenceClose(input);
-                silenceClose(output);
+                silenceClose(input, true);
+                silenceClose(output, false);
             }
         }
 
-        private void silenceClose(Socket socket) {
+        private void silenceClose(Socket socket, boolean input) {
             if (socket == null || socket.isClosed()) {
+                LOG.warn("Socket is null or closed");
                 return;
+            }
+            if (input) {
+                try {
+                    socket.shutdownInput();
+                } catch (IOException e) {
+                    LOG.warn("Socket shutdown input failed", e);
+                }
+            } else {
+                try {
+                    socket.shutdownOutput();
+                } catch (IOException e) {
+                    LOG.warn("Socket shutdown input failed", e);
+                }
             }
             AtomicInteger counter = closeCounter.getOrDefault(socket, new AtomicInteger(1));
             if (counter.decrementAndGet() > 0) {
