@@ -24,7 +24,7 @@ import java.util.concurrent.locks.LockSupport;
 public class LatencyProxy {
     private static final Log LOG = LogFactory.getLog(LatencyProxy.class);
 
-    private final int packetSize = 16 << 10;
+    private final int packetSize = 8 << 10;
     private final AtomicLong connectionCount = new AtomicLong();
     private final AtomicLong client2server = new AtomicLong();
     private final AtomicLong server2client = new AtomicLong();
@@ -157,10 +157,10 @@ public class LatencyProxy {
         public void run() {
             try (InputStream inputStream = input.getInputStream();
                  OutputStream outputStream = output.getOutputStream()) {
-                byte[] buf = new byte[packetSize];
+                byte[] buffer = new byte[packetSize];
 
                 int n;
-                while ((n = inputStream.read(buf)) >= 0) {
+                while ((n = inputStream.read(buffer)) >= 0) {
                     if (latency > 0) {
                         LockSupport.parkNanos(latency);
                     }
@@ -168,7 +168,8 @@ public class LatencyProxy {
                         continue;
                     }
                     byteCounter.addAndGet(n);
-                    outputStream.write(buf, 0, n);
+                    outputStream.write(buffer, 0, n);
+                    outputStream.flush();
                 }
             } catch (IOException e) {
                 LOG.error("Forwarding exception", e);
