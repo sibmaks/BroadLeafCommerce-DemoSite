@@ -26,14 +26,6 @@ public class ProxyStats {
         connectionCount.incrementAndGet();
     }
 
-    public AtomicLong getClient2ServerCounter() {
-        return client2server;
-    }
-
-    public AtomicLong getServer2ClientCounter() {
-        return server2client;
-    }
-
     public void addBytes(boolean isClient2server, int n) {
         if (isClient2server) {
             client2server.addAndGet(n);

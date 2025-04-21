@@ -10,10 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.ReentrantLock;
 
 class LatencyProxy {
     private static final Log LOG = LogFactory.getLog(LatencyProxy.class);
 
+    private final ReentrantLock socketCloseLock = new ReentrantLock();
     private final ProxyStats proxyStats = new ProxyStats();
     private final ProxyProperties proxyProperties = new ProxyProperties();
 
@@ -45,9 +47,11 @@ class LatencyProxy {
             try {
                 while (!Thread.interrupted()) {
                     Socket clientSide = socket.accept();
+                    LOG.info("Accepted connection: " + clientSide);
                     try {
                         Socket serverSide = new Socket();
                         serverSide.connect(forward);
+                        LOG.info("Create forwarding connection: " + serverSide);
                         ForwardThread a = new ForwardThread(clientSide, serverSide, true);
                         ForwardThread b = new ForwardThread(serverSide, clientSide, false);
                         a.start();
@@ -98,6 +102,7 @@ class LatencyProxy {
                     outputStream.write(buffer, 0, n);
                     outputStream.flush();
                 }
+                LOG.info(String.format("Read %s successfully finished", input));
             } catch (IOException e) {
                 LOG.error("Forwarding exception", e);
             } finally {
@@ -107,38 +112,51 @@ class LatencyProxy {
         }
 
         private void silenceInputClose(Socket socket) {
-            if (socket == null || socket.isClosed()) {
-                LOG.warn(String.format("Socket (%s) is null or closed", socket));
-                return;
-            }
+            socketCloseLock.lock();
             try {
-                socket.shutdownInput();
-            } catch (IOException e) {
-                LOG.warn(String.format("Socket (%s) shutdown input failed", socket), e);
-            }
-            if (!socket.isOutputShutdown()) {
-                return;
+                if (socket == null || socket.isClosed()) {
+                    LOG.warn(String.format("Socket (%s) is null or closed", socket));
+                    return;
+                }
+                try {
+                    LOG.info(String.format("Socket (%s) close input", socket));
+                    socket.shutdownInput();
+                } catch (IOException e) {
+                    LOG.warn(String.format("Socket (%s) shutdown input failed", socket), e);
+                }
+                if (!socket.isOutputShutdown()) {
+                    return;
+                }
+            } finally {
+                socketCloseLock.unlock();
             }
             silenceClose(socket);
         }
 
         private void silenceOutputClose(Socket socket) {
-            if (socket == null || socket.isClosed()) {
-                LOG.warn(String.format("Socket (%s) is null or closed", socket));
-                return;
-            }
+            socketCloseLock.lock();
             try {
-                socket.shutdownOutput();
-            } catch (IOException e) {
-                LOG.warn(String.format("Socket (%s) shutdown output failed", socket), e);
-            }
-            if (!socket.isInputShutdown()) {
-                return;
+                if (socket == null || socket.isClosed()) {
+                    LOG.warn(String.format("Socket (%s) is null or closed", socket));
+                    return;
+                }
+                try {
+                    LOG.info(String.format("Socket (%s) close output", socket));
+                    socket.shutdownOutput();
+                } catch (IOException e) {
+                    LOG.warn(String.format("Socket (%s) shutdown output failed", socket), e);
+                }
+                if (!socket.isInputShutdown()) {
+                    return;
+                }
+            } finally {
+                socketCloseLock.unlock();
             }
             silenceClose(socket);
         }
 
         private void silenceClose(Socket socket) {
+            LOG.info(String.format("Socket (%s) close", socket));
             try {
                 socket.close();
             } catch (IOException e) {
