@@ -160,9 +160,12 @@ public class LatencyProxy {
                 byte[] buf = new byte[packetSize];
 
                 int n;
-                while ((n = inputStream.read(buf)) > 0) {
+                while ((n = inputStream.read(buf)) >= 0) {
                     if (latency > 0) {
                         LockSupport.parkNanos(latency);
+                    }
+                    if (n == 0) {
+                        continue;
                     }
                     byteCounter.addAndGet(n);
                     outputStream.write(buf, 0, n);
