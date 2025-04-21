@@ -114,8 +114,7 @@ class LatencyProxy {
         private void silenceInputClose(Socket socket) {
             socketCloseLock.lock();
             try {
-                if (socket == null || socket.isClosed()) {
-                    LOG.warn(String.format("Socket (%s) is null or closed", socket));
+                if (socket == null) {
                     return;
                 }
                 try {
