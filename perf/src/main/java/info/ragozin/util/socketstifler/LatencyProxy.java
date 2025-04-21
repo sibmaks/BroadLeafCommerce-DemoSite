@@ -180,20 +180,20 @@ public class LatencyProxy {
 
         private void silenceClose(Socket socket, boolean input) {
             if (socket == null || socket.isClosed()) {
-                LOG.warn("Socket is null or closed");
+                LOG.warn(String.format("Socket (%s) is null or closed", socket));
                 return;
             }
             if (input) {
                 try {
                     socket.shutdownInput();
                 } catch (IOException e) {
-                    LOG.warn("Socket shutdown input failed", e);
+                    LOG.warn(String.format("Socket (%s) shutdown input failed", socket), e);
                 }
             } else {
                 try {
                     socket.shutdownOutput();
                 } catch (IOException e) {
-                    LOG.warn("Socket shutdown input failed", e);
+                    LOG.warn(String.format("Socket (%s) shutdown input failed", socket), e);
                 }
             }
             AtomicInteger counter = closeCounter.getOrDefault(socket, new AtomicInteger(1));
