@@ -1,8 +1,12 @@
 package info.ragozin.hsql;
 
-import static info.ragozin.demostarter.DemoInitializer.file;
-import static info.ragozin.demostarter.DemoInitializer.initLifeGrant;
-import static info.ragozin.demostarter.DemoInitializer.kill;
+import info.ragozin.demostarter.DemoInitializer;
+import info.ragozin.util.socketstifler.latency.LatencyProxyStarter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hsqldb.Server;
+import org.hsqldb.persist.HsqlProperties;
+import org.hsqldb.server.ServerAcl;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hsqldb.Server;
-import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.ServerAcl;
-
-import info.ragozin.demostarter.DemoInitializer;
-import info.ragozin.util.socketstifler.LatencyProxy;
+import static info.ragozin.demostarter.DemoInitializer.*;
 
 public class HsqlStarter {
 
@@ -30,6 +27,29 @@ public class HsqlStarter {
     protected HsqlProperties props;
     protected Server server;
     protected Thread serverThread;
+
+    public HsqlStarter() throws Exception {
+
+        int hsqlPort = Integer.parseInt(DemoInitializer.prop("demo.database.realPort", "9001"));
+        int proxyPort = Integer.parseInt(DemoInitializer.prop("demo.database.port", "9002"));
+
+        if (hsqlPort != proxyPort) {
+//            SocketStifler stifler = SocketStifler.start();
+//            stifler.addRoute(new InetSocketAddress(proxyPort), new InetSocketAddress(hsqlPort));
+            LatencyProxyStarter.start(new InetSocketAddress(proxyPort), new InetSocketAddress(hsqlPort));
+
+            System.out.println("Forward " + proxyPort + " -> " + hsqlPort + " with delay and bandwith limitation");
+        }
+
+        Properties databaseConfig = new Properties();
+        databaseConfig.setProperty("server.database.0", "file:" + DemoInitializer.path("var/hsqldb/broadleaf"));
+        databaseConfig.setProperty("server.dbname.0", "broadleaf");
+        databaseConfig.setProperty("server.remote_open", "true");
+        databaseConfig.setProperty("hsqldb.reconfig_logging", "false");
+        databaseConfig.setProperty("server.port", String.valueOf(hsqlPort));
+
+        this.props = new HsqlProperties(databaseConfig);
+    }
 
     public static boolean check() {
         return DemoInitializer.check("hsqldb");
@@ -92,29 +112,6 @@ public class HsqlStarter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public HsqlStarter() throws Exception {
-
-        int hsqlPort = Integer.valueOf(DemoInitializer.prop("demo.database.realPort", "9001"));
-        int proxyPort = Integer.valueOf(DemoInitializer.prop("demo.database.port", "9002"));
-
-        if (hsqlPort != proxyPort) {
-//            SocketStifler stifler = SocketStifler.start();
-//            stifler.addRoute(new InetSocketAddress(proxyPort), new InetSocketAddress(hsqlPort));
-            LatencyProxy.start(new InetSocketAddress(proxyPort), new InetSocketAddress(hsqlPort));
-
-            System.out.println("Forward " + proxyPort + " -> " + hsqlPort + " with delay and bandwith limitation");
-        }
-
-        Properties databaseConfig = new Properties();
-        databaseConfig.setProperty("server.database.0", "file:" + DemoInitializer.path("var/hsqldb/broadleaf"));
-        databaseConfig.setProperty("server.dbname.0", "broadleaf");
-        databaseConfig.setProperty("server.remote_open", "true");
-        databaseConfig.setProperty("hsqldb.reconfig_logging", "false");
-        databaseConfig.setProperty("server.port", String.valueOf(hsqlPort));
-
-        this.props = new HsqlProperties(databaseConfig);
     }
 
     private void startServer() {
